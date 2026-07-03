@@ -1,0 +1,5 @@
+# No external packages required - this project only uses Python's
+# standard library (urllib, json, xml.etree.ElementTree, unittest).
+#
+# Dev-only tool used for linting before submission:
+pylint
