@@ -3,16 +3,15 @@
 Week 1 - Python Task (Module 2, Part B)
 
 A command-line script that takes keywords and prints matching headlines
-from four sources: Reddit (r/programming), Hacker News, the Guardian
-(Technology), and the New York Times (Technology).
+(with their links) from four sources: Reddit (r/programming), Hacker
+News, the Guardian (Technology), and the New York Times (Technology).
 
 No third-party packages are used - only Python's standard library
-(`urllib`, `json`, `xml.etree.ElementTree`, `unittest`).
+(`urllib`, `json`, `xml.etree.ElementTree`).
 
 ## How each source is reached
 
-| Source | Format | Method |
-|---|---|---|
+
 | Reddit r/programming | JSON | Reddit's own `.json` endpoint |
 | Hacker News | JSON | Official public Hacker News API (Firebase) |
 | Guardian Technology | RSS (XML) | Public RSS feed, parsed with `xml.etree.ElementTree` |
@@ -22,6 +21,12 @@ Hacker News is fetched through its official JSON API rather than by
 scraping the HTML page - it's simpler, more reliable, and still needs
 no external parsing library.
 
+Reddit sends a descriptive User-Agent (following Reddit's recommended
+format) to reduce the chance of being blocked. Reddit can still
+occasionally block requests (403) depending on IP/rate limits - if
+that happens the script skips it and continues with the other three
+sources instead of crashing.
+
 ## Project structure
 
 ```
@@ -29,7 +34,7 @@ news-scraper/
 ├── main.py                       # entry point - reads keywords, runs everything
 ├── requirements.txt
 ├── src/
-│   ├── models.py                  # Headline data class
+│   ├── models.py                  # Headline data class (prints title + link)
 │   ├── exceptions.py               # FetchError
 │   ├── http_client.py               # shared fetch_text / fetch_json helpers
 │   ├── rss_parser.py                 # shared RSS parsing (used by Guardian + NYT)
@@ -39,8 +44,7 @@ news-scraper/
 │       ├── hackernews_source.py
 │       ├── guardian_source.py
 │       └── nyt_source.py
-└── tests/
-    └── test_keyword_filter.py         # unittest suite (no network calls)
+
 ```
 
 ## Setup (virtual environment)
@@ -63,14 +67,8 @@ Or with no arguments (it will prompt you):
 python main.py
 ```
 
-## Running the tests
-
-```bash
-python -m unittest discover tests -v
-```
-
-Tests only cover the keyword-matching logic and don't hit the network,
-so they run instantly and reliably.
+Each matching headline is printed with its source and link underneath,
+so you can trace it back to the original page.
 
 ## Linting
 
